@@ -65,19 +65,26 @@
                 input.value = '';
 
                 // Update this URL to point to your deployed server
-                fetch('https://ai-model-production-558e.up.railway.app/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ message })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    addMessage('Chatbot', data.reply, 'bot');
-                });
-            }
-        });
+               fetch('https://ai-model-production-558e.up.railway.app/chat', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ message })
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return response.json();
+})
+.then(data => {
+    addMessage('Chatbot', data.reply, 'bot');
+})
+.catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+    addMessage('Chatbot', 'Sorry, I could not process your request.', 'bot');
+});
 
         function addMessage(sender, text, type) {
             const messageElement = document.createElement('div');
