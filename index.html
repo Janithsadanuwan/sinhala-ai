@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>සිංහල AI චැට්බොට්</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        #chatbox {
+            width: 350px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        #messages {
+            height: 300px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: scroll;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        #input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .message {
+            margin: 5px 0;
+        }
+        .user {
+            color: blue;
+            font-weight: bold;
+        }
+        .bot {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="chatbox">
+        <div id="messages"></div>
+        <input type="text" id="input" placeholder="ඔබේ පණිවුඩය මෙහි ලියන්න..." autofocus>
+    </div>
+
+    <script>
+        const input = document.getElementById('input');
+        const messages = document.getElementById('messages');
+
+        input.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const message = input.value;
+                addMessage('You', message, 'user');
+                input.value = '';
+
+                // Update this URL to point to your deployed server
+                fetch('https://ai-model-production-558e.up.railway.app//chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    addMessage('Chatbot', data.reply, 'bot');
+                });
+            }
+        });
+
+        function addMessage(sender, text, type) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `${sender}: ${text}`;
+            messageElement.className = `message ${type}`;
+            messages.appendChild(messageElement);
+            messages.scrollTop = messages.scrollHeight;
+        }
+    </script>
+
+</body>
+</html>
